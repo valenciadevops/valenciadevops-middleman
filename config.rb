@@ -47,10 +47,6 @@ helpers do
   def twitter_url(username)
     "<a target='_blank' href='https://twitter.com/#{username}'>@#{username}</a>"
   end
-
-#   def some_helper
-#     "Helping"
-#   end
 end
 
 set :css_dir, 'stylesheets'
@@ -63,24 +59,10 @@ set :haml, format: :html5
 
 activate :directory_indexes
 
-# Build-specific configuration
-configure :build do
-  # For example, change the Compass output style for deployment
-  activate :minify_css
-
-  # Minify Javascript on build
-  activate :minify_javascript
-
-  # Enable cache buster
-  activate :asset_hash
-
-  # Use relative URLs
-  activate :relative_assets
-
-  # Or use a different image path
-  # set :http_prefix, "/Content/images/"
-
-  # Use custom assets host to point to CDN or S3
-  activate :asset_host, host: "//#{ENV['ASSET_HOST']}" if ENV['ASSET_HOST']
-  activate :gzip
-end
+activate :external_pipeline,
+  name: :webpack,
+  command: build? ?
+    "./node_modules/webpack/bin/webpack.js --bail" :
+    "./node_modules/webpack/bin/webpack.js --watch -d",
+  source: ".tmp/dist",
+  latency: 1
